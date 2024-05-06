@@ -1,4 +1,5 @@
 import { Config } from '@stencil/core';
+import { sass } from '@stencil/sass';
 
 export const config: Config = {
   namespace: 'my-stencil-test',
@@ -23,4 +24,14 @@ export const config: Config = {
   testing: {
     browserHeadless: "new",
   },
+  globalStyle: 'src/global/app.scss',
+  plugins: [
+    sass({
+      injectGlobalPaths: [
+        'src/global/colors.scss',
+        'src/global/variables.scss',
+        'src/global/mixins.scss',
+      ]
+    })
+  ]
 };
