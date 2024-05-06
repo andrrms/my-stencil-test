@@ -6,16 +6,27 @@
   height: 100%;
   padding: 30px;
 
-  background-color: var(--body-background);
+  background-color: var(--slate1);
+  color: var(--slate12);
 
   div {
     width: 100%;
     height: 100%;
 
     main {
-      background-color: red;
       width: 100%;
       height: 100%;
+
+      background-color: var(--slate3);
+      border: 1px solid var(--slate4);
+      border-radius: 8px;
+
+      display: grid;
+      grid-template-columns: clamp(200px, 20%, 300px) 1fr;
+
+      aside {
+        width: 100%;
+      }
     }
   }
 }
