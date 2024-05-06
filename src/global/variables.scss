@@ -1,0 +1,11 @@
+app-main[theme="light"] {
+  @include slate;
+
+  --body-background: var(--slate1, blue);
+}
+
+app-main[theme="dark"] {
+  @include slateDark;
+
+  --body-background: var(--slateDark1, blue);
+}
