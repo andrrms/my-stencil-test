@@ -7,11 +7,25 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface AppMain {
-        "theme": "light" | "dark" | "system";
     }
 }
+export interface AppMainCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLAppMainElement;
+}
 declare global {
+    interface HTMLAppMainElementEventMap {
+        "themeChanged": { theme: 'light' | 'dark' | 'system' };
+    }
     interface HTMLAppMainElement extends Components.AppMain, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLAppMainElementEventMap>(type: K, listener: (this: HTMLAppMainElement, ev: AppMainCustomEvent<HTMLAppMainElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLAppMainElementEventMap>(type: K, listener: (this: HTMLAppMainElement, ev: AppMainCustomEvent<HTMLAppMainElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLAppMainElement: {
         prototype: HTMLAppMainElement;
@@ -23,7 +37,7 @@ declare global {
 }
 declare namespace LocalJSX {
     interface AppMain {
-        "theme"?: "light" | "dark" | "system";
+        "onThemeChanged"?: (event: AppMainCustomEvent<{ theme: 'light' | 'dark' | 'system' }>) => void;
     }
     interface IntrinsicElements {
         "app-main": AppMain;

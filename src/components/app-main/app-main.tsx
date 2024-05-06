@@ -1,4 +1,6 @@
-import { Component, Host, Prop, State, Watch, h } from '@stencil/core';
+import { Component, Event, EventEmitter, Host, Listen, h } from '@stencil/core';
+
+type Theme = 'light' | 'dark' | 'system';
 
 @Component({
   tag: 'app-main',
@@ -6,44 +8,52 @@ import { Component, Host, Prop, State, Watch, h } from '@stencil/core';
   shadow: true,
 })
 export class AppMain {
-  @Prop() theme: "light" | "dark" | "system" = "system";
-  @State() realTheme: "light" | "dark" = "light";
-
-  @Watch("theme")
-  parseTheme(theme: "light" | "dark" | "system") {
-    if (theme === "system") {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    }
-
-    this.realTheme = theme;
-    return theme;
-  }
-
   render() {
     return (
-      <Host theme={this.theme}>
+      <Host>
         <div>
           <main>
-            <h1>Hello, stencil</h1>
+            <aside>
+              <h1>My messenger</h1>
+            </aside>
+            <section>
+              <h1>Hello, stencil</h1>
+            </section>
           </main>
         </div>
       </Host>
     );
   }
 
-  connectedCallback() {
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", (e) => {
-        this.realTheme = e.matches ? "dark" : "light";
-      });
+  static readonly THEME_CHANGED_EVENT = 'themeChanged';
+  @Listen(AppMain.THEME_CHANGED_EVENT)
+  updateTheme(event: CustomEvent<{ theme: 'light' | 'dark' | 'system' }>) {
+    console.log(event);
+    const theme = event.detail.theme;
+    const system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+
+    if (theme === 'system') {
+      document.documentElement.setAttribute('theme', system);
+    } else {
+      document.documentElement.setAttribute('theme', theme);
+    }
+
   }
 
-  disconnectedCallback() {
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .removeEventListener("change", (e) => {
-        this.realTheme = e.matches ? "dark" : "light";
-      });
+  @Event() themeChanged: EventEmitter<{ theme: 'light' | 'dark' | 'system' }>;
+  connectedCallback() {
+    customElements.whenDefined('app-main').then(() => {
+      const theme = localStorage.getItem('theme') as Theme;
+      this.themeChanged.emit({ theme });
+    });
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      const theme = localStorage.getItem('theme');
+      const system = e.matches ? 'dark' : 'light';
+
+      if (theme === 'system') {
+        document.documentElement.setAttribute('theme', system);
+      }
+    });
   }
 }

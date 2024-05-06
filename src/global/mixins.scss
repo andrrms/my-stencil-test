@@ -45,3 +45,10 @@
   @include reset-box;
   @include reset-list;
 }
+
+@mixin source-sans($weight: 400, $style: normal) {
+  font-family: 'Source Sans 3', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: $weight;
+  font-style: $style;
+}
